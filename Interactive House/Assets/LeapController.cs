@@ -13,8 +13,24 @@ public class LeapController : MonoBehaviour {
     public Camera camera2;
     public Camera camera3;
 
-    //public Camera[] cameras;
+    /// <summary>
+    /// Finger Positions to check for any Motion (Rain Animation)
+    /// </summary>
+    private float positionThumb;
+    private float positionIndex;
+    private float positionMiddle;
+    private float positionRing;
+    private float positionPinky;
 
+    /// <summary>
+    /// A flag to have the Check for Motion happen 1 Frame later
+    /// </summary>
+    private bool frameFlag;
+
+    /// <summary>
+    /// A flag to start and stop RainAnimation
+    /// </summary>
+    private bool animationFlag;
     /// <summary>
     /// Variables to check active and to be active Camera
     /// </summary>
@@ -30,6 +46,8 @@ public class LeapController : MonoBehaviour {
     /// </summary>
 	void Start () {
         leapProvider = FindObjectOfType<LeapServiceProvider>() as LeapServiceProvider;
+        frameFlag = true;
+        animationFlag = false;
     }
 	
 	/// <summary>
@@ -42,10 +60,50 @@ public class LeapController : MonoBehaviour {
             //Left Hand controlls Rain Animation
             if (hand.IsLeft)
             {
-                /*
-                if (motionRain(hand)) //StartAnimation;
-                else //StopAnimation;
-                */
+                List<Finger> fingerlist = hand.Fingers;
+                if (frameFlag)
+                {
+                    //Save all current Fingerpositions                   
+                    positionThumb = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z;
+                    positionIndex = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z;
+                    positionMiddle = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z;
+                    positionRing = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z;
+                    positionPinky = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z;
+
+                }
+                else
+                {
+                    //Check Tolerance Level as it can differ from Hand to Hand
+                    //print(Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z));
+                    //print(Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z));
+                    //print(Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z));
+                    //print(Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z));
+                    //print(Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z));
+                    //Check if all Fingerpositions changed
+                    if (Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z) > 0.0009) animationFlag = false;
+                    else if (Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z) > 0.0009) animationFlag = false;
+                    else if (Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z) > 0.0005) animationFlag = false;
+                    else if (Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z) > 0.0009) animationFlag = false;
+                    else if (Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z) > 0.0009) animationFlag = false;
+                    else animationFlag = true;
+                    
+                    //For some reasons this works better than putting "!" into every if-Condition (causes it to not function accurate)
+                    animationFlag = !animationFlag;
+                }
+
+                //Toggle frameFlag (above: else is run the frame after if)
+                frameFlag = !frameFlag;
+
+                print(animationFlag);
+
+                if (animationFlag)
+                {
+                    //Start Animation              
+                }
+                else
+                {
+                    //Stop Animation
+                }
             }
             //Right Hand controlls active Camera
             if (hand.IsRight)
@@ -60,7 +118,6 @@ public class LeapController : MonoBehaviour {
             }
         }
 	}
-
     /// <summary>
     /// Checks if the Motion for Rain was done
     /// All Fingers pointing downwards and moving
