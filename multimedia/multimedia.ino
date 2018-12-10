@@ -19,6 +19,13 @@ int PinUltraTrig = 8;
 int PinMagnet = 3;
 int PinLichtsensor = A0;
 int PinAlarmLED = 12;
+int PinAlarmBuzzer = 4;
+
+/* Alarm */
+bool isAlarm = false;
+const long interval = 250;  
+int alarmOutputState = LOW; 
+unsigned long previousMillis = 0;        // will store last time LED was updated
 
 #define MAX_DISTANCE 200 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 
@@ -29,6 +36,8 @@ void setup() {
   Serial.begin(9600);
   pinMode(PinKlingel, INPUT);
   pinMode(PinMagnet, INPUT);
+  pinMode(PinAlarmLED, OUTPUT);
+  pinMode(PinAlarmBuzzer, OUTPUT);
 }
 
 void loop() {
@@ -40,9 +49,38 @@ void loop() {
   unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
   int sonarCM = uS / US_ROUNDTRIP_CM; // in cm
 
+
+  isAlarm = sonarCM > 8;
+  unsigned long currentMillis = millis();
+  if(isAlarm){
+    if (currentMillis - previousMillis >= interval) {
+      // save the last time you blinked the LED
+      previousMillis = currentMillis;
+  
+      // if the LED is off turn it on and vice-versa:
+      if (alarmOutputState == LOW) {
+        alarmOutputState = HIGH;
+      } else {
+        alarmOutputState = LOW;
+      }
+  
+      // set the LED with the ledState of the variable:
+      digitalWrite(PinAlarmLED, alarmOutputState);
+      digitalWrite(PinAlarmBuzzer, alarmOutputState);
+    }
+
+  }
+  else{
+    digitalWrite(PinAlarmBuzzer, LOW);
+    digitalWrite(PinAlarmLED, LOW);
+  }
+  
+
   int magnetState = digitalRead(PinMagnet);
+
   int lichtsensorState = analogRead(PinLichtsensor);
-  Serial.println(String(potiTuer) + "," + String(klingelState) + "," + String(sonarCM) + "," + String(magnetState) + "," 
+  Serial.println(String(potiTuer) + "," + String(klingelState) + "," + String(sonarCM) + "," + String(isAlarm) + ","   
+    + String(magnetState) + "," 
     + String(lichtsensorState));
   Serial.flush();
 }
