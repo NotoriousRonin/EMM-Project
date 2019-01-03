@@ -6,52 +6,59 @@ using UnityEngine;
 public class WeatherController : MonoBehaviour
 {
 
-    /*
-     * 
-     * Ggf noch Licht-Intensität runtersetzen bei Wetter/Regen Aktivierung 
-     */
-
     public GameObject weather;
-    private bool weatherIsVisible;
-
-    //contains all Children (Rain1,Clouds1,Fog) could be important for manipulating weather
-    ParticleSystem[] particleSystems; 
+    //Rain1,Clouds1,Fog
+    ParticleSystem[] particleSystems;
+    bool weatherActive=false;
 
 
     // Use this for initialization
     void Start()
     {
-        weatherIsVisible = weather.activeSelf;
         particleSystems = weather.GetComponentsInChildren<ParticleSystem>();
     }
 
     void Update()
     {
-       
-        particleSystems= weather.GetComponentsInChildren<ParticleSystem>();
-        tastaturListener();
+        checkWeatherActive();
     }
 
-    //just for tests
-    void tastaturListener()
+    //Schnittstelle nach außen (LeapMotion)
+    public void setActivateWeather(bool b)
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (b == true)
         {
-            /*
-            Debug.Log(particleSystems[0].ToString());
-            Debug.Log(particleSystems[1].ToString());
-            Debug.Log(particleSystems[2].ToString());
-            */
-            Debug.Log("Wetter aktiviert/deaktiviert.");
-            activateWeather();
+            weatherActive=true;
+            manipulateEmissions(24,200,10);
+        }
+        else
+        {
+            weatherActive = false;
+            manipulateEmissions(0,0,0);
+        }
+    }
+
+    private void manipulateEmissions(float clouds, float rain, float fog)
+    {
+        var emission = particleSystems[0].emission;
+        emission.rateOverTime = clouds;
+        emission = particleSystems[1].emission;
+        emission.rateOverTime = rain;
+        emission = particleSystems[2].emission;
+        emission.rateOverTime = fog;
+    }
+
+    private void checkWeatherActive()
+    {
+        if (weatherActive == true)
+        {
+            weather.SetActive(true);
         }
 
-    }
-
-    public void activateWeather()
-    {
-        weatherIsVisible = !weatherIsVisible;
-        weather.SetActive(weatherIsVisible);
+        if (weatherActive == false && particleSystems[0].particleCount==0)
+        {
+            weather.SetActive(false);
+        }
 
     }
 
