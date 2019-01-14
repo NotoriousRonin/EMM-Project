@@ -7,7 +7,12 @@ using UnityEngine;
 
 public class SerialCommunicator : MonoBehaviour
 {
+    public bool isInDemoMode;
+    public float demoTimeVal;
+
     public volatile int potiTuer;
+    public volatile int potiTuerMin = 0;
+    public volatile int potiTuerMax = 5;
     public volatile bool klingelState;
     public volatile int sonarCM;
     public volatile bool isAlarm;
@@ -71,13 +76,30 @@ public class SerialCommunicator : MonoBehaviour
                 }
             }
         }));
-        thread.Start();
+
+        // only start if is not in demo mode
+        if(isInDemoMode == false)
+            thread.Start();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (isInDemoMode)
+        {
+            potiTuer = (int)Mathf.Lerp(potiTuerMin, potiTuerMax, demoTimeVal);
 
+            demoTimeVal += 0.5f * Time.deltaTime;
+
+            if (demoTimeVal > 1.0f)
+            {
+                int temp = potiTuerMax;
+                potiTuerMax = potiTuerMin;
+                potiTuerMin = temp;
+                demoTimeVal = 0.0f;
+            }
+
+        }
     }
 
     void OnApplicationQuit()
