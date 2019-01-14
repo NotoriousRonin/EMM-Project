@@ -1,0 +1,58 @@
+potiTür
+offen 90°	<13
+halboffen	~14-15 		
+zu		>16
+
+klingelState
+nicht gedrückt	0
+gedrückt	1
+
+sonarCM
+/Kellertür
+geschlossen	6-7
+offen		>9 oder <5	//wenn die tür wirklich weit auf ist, dann wird der wert manchmal 0 oder 4 und der Alarm reagiert dann auch nicht...
+
+isAlarm
+Kommt von der Kellertür
+kein Alarm	0
+Alarm		1
+
+magnetState
+Schornstein
+kein Gegenstand im Schornstein	0
+Gegenstand im Schornstein 1
+
+lichtsensorState
+Bei mir Draußen Dunkel im Raum warmes Licht an
+nicht Abgedunkelt	>14
+Abgedunkelt		<5
+
+Gyro
+Tür zu mir zeigend
+alle Werte +-3
+	Gerade auf dem Tisch
+x	356
+y	352
+z	201
+
+	Nach Rechts gebäugt
+x	317
+y	352
+z	261
+
+	Nach Links
+x	31
+y	352
+z	101
+
+	Nach vorne
+x	352
+y	295
+z	183
+
+	Nach hinten
+x	355
+y	40
+z	355
+
+
