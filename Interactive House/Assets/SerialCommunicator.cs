@@ -11,10 +11,15 @@ public class SerialCommunicator : MonoBehaviour
     public float demoTimeVal;
 
     public volatile int potiTuer;
-    public volatile int potiTuerMin = 0;
-    public volatile int potiTuerMax = 5;
+    [DisplayWithoutEdit]
+    public volatile int potiTuerMin;
+    [DisplayWithoutEdit]
+    public volatile int potiTuerMax;
     public volatile bool klingelState;
+
+    /* Tuer1 */
     public volatile int sonarCM;
+
     public volatile bool isAlarm;
     public volatile bool magnetState;
     public volatile int lichtsensorState;
@@ -26,6 +31,11 @@ public class SerialCommunicator : MonoBehaviour
     Thread thread = null;
     void Start()
     {
+        // init
+        potiTuerMin = 12;
+        potiTuerMax = 16;
+
+
         if (!this.enabled)
             return;
 
@@ -89,7 +99,7 @@ public class SerialCommunicator : MonoBehaviour
         {
             potiTuer = (int)Mathf.Lerp(potiTuerMin, potiTuerMax, demoTimeVal);
 
-            demoTimeVal += 0.5f * Time.deltaTime;
+            demoTimeVal += 0.2f * Time.deltaTime;
 
             if (demoTimeVal > 1.0f)
             {
@@ -97,6 +107,15 @@ public class SerialCommunicator : MonoBehaviour
                 potiTuerMax = potiTuerMin;
                 potiTuerMin = temp;
                 demoTimeVal = 0.0f;
+            }
+
+            if(demoTimeVal < 0.5f)
+            {
+                sonarCM = 6; // geschlossen
+            }
+            else
+            {
+                sonarCM = 10;
             }
 
         }

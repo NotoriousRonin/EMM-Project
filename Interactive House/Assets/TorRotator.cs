@@ -13,9 +13,9 @@ public class TorRotator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Quaternion target = Quaternion.Euler(0, SerialCommunicator.potiTuer * 60f, 0);
+        decimal res = ((decimal)SerialCommunicator.potiTuer).Map( SerialCommunicator.potiTuerMin, SerialCommunicator.potiTuerMax, 0, 90);
+        Debug.Log(SerialCommunicator.potiTuer + " to: " + res);
+        Quaternion target = Quaternion.Euler(0, (int)res, 0);
         transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
-        //transform.rotation.y = SerialCommunicator.potiTuer;
-        //transform.Rotate(0, SerialCommunicator.potiTuer, 0, Space.Self);
     }
 }
