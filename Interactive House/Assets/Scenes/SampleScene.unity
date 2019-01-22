@@ -736,7 +736,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db148be7dbf953a47a31919bb7210ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInDemoMode: 1
+  isInDemoMode: 0
   demoTimeVal: 0
   potiTuer: 0
   potiTuerMin: 0
@@ -749,6 +749,7 @@ MonoBehaviour:
   GyroX: 0
   GyroY: 0
   GyroZ: 0
+  COM: COM6
 --- !u!4 &2142532851
 Transform:
   m_ObjectHideFlags: 0

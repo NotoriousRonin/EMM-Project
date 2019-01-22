@@ -12,9 +12,9 @@ public class SerialCommunicator : MonoBehaviour
 
     public volatile int potiTuer;
     [DisplayWithoutEdit]
-    public volatile int potiTuerMin;
+    public volatile int potiTuerZu;
     [DisplayWithoutEdit]
-    public volatile int potiTuerMax;
+    public volatile int potiTuerOffen;
     public volatile bool klingelState;
 
     /* Tuer1 */
@@ -27,24 +27,34 @@ public class SerialCommunicator : MonoBehaviour
     public volatile float GyroY;
     public volatile float GyroZ;
 
+    /* changing this will send serial commands to the arduino */
+    public volatile bool isDachfensterOpen;
+    private volatile bool lastIsDachfensterOpen;
+
+    public String COM;
+
     SerialPort sp = null;
     Thread thread = null;
     void Start()
     {
         // init
-        potiTuerMin = 12;
-        potiTuerMax = 16;
+        potiTuerZu = 16; // zu 
+        potiTuerOffen = 6; // offen
 
         GyroX = 356f;
         GyroY = 352f;
         GyroZ = 201f;
+
+        isDachfensterOpen = true;
+        lastIsDachfensterOpen = isDachfensterOpen;
 
         if (!this.enabled)
             return;
 
         thread = new Thread(new ThreadStart(delegate ()
         {
-            sp = new SerialPort("COM7", 9600);
+            Debug.Log("connecting on: " + COM);
+            sp = new SerialPort(COM, 9600);
 
             if (!sp.IsOpen)
                 sp.Open();
@@ -54,6 +64,7 @@ public class SerialCommunicator : MonoBehaviour
                 if (sp.IsOpen)
                 {
                     string line = sp.ReadLine();
+                    //Debug.Log(line);
                     try
                     {
                     /*
@@ -82,6 +93,14 @@ public class SerialCommunicator : MonoBehaviour
                     {
                         Debug.Log("could not parse " + ex.Message);
                     }
+
+                    // send Dachfenster state
+                    if (lastIsDachfensterOpen != isDachfensterOpen)
+                    {
+                        Debug.Log("Sending isDachfensterOpen state to Arduino");
+                        sp.Write(new[] { isDachfensterOpen ? 'u' : 'd' }, 0, 1);
+                        lastIsDachfensterOpen = isDachfensterOpen;
+                    }
                 }
                 else
                 {
@@ -100,6 +119,7 @@ public class SerialCommunicator : MonoBehaviour
     {
         if (isInDemoMode)
         {
+            /*
             potiTuer = (int)Mathf.Lerp(potiTuerMin, potiTuerMax, demoTimeVal);
 
             demoTimeVal += 0.2f * Time.deltaTime;
@@ -111,6 +131,7 @@ public class SerialCommunicator : MonoBehaviour
                 potiTuerMin = temp;
                 demoTimeVal = 0.0f;
             }
+            */
 
             if(demoTimeVal < 0.5f)
             {

@@ -16,8 +16,10 @@ public class HausRotator : MonoBehaviour {
 	void Update () {
         Vector3 newRotation = initGyroRotation - new Vector3(serialCommunicator.GyroX, serialCommunicator.GyroY, serialCommunicator.GyroZ);
         // ignore y and z for now
-        newRotation.y = 0f;
-        newRotation.z = 0f;
+        //newRotation.y = 0f;
+        newRotation.z = serialCommunicator.GyroY;
+        newRotation.y = 0;
+        //newRotation.y = serialCommunicator.GyroZ;
         transform.rotation = Quaternion.Euler(newRotation);
     }
 }

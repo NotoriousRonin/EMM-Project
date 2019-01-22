@@ -14,6 +14,8 @@ public class Tuer1 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        toHide.GetComponent<Renderer>().enabled = SerialCommunicator.sonarCM > 9 || SerialCommunicator.sonarCM < 5;
+        //toHide.GetComponent<Renderer>().enabled = !(SerialCommunicator.sonarCM > 9 || SerialCommunicator.sonarCM < 5);
+        toHide.GetComponent<Renderer>().enabled = !SerialCommunicator.isAlarm;
+
     }
 }

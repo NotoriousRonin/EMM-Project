@@ -76,7 +76,7 @@ void setup() {
 
   dachfensterServo.attach(PinDachfensterServo);
   // open dachfenster at beginning
-  dachfensterServo.write(180);
+  dachfensterServo.write(0);
 }
 
 void loop() {
@@ -85,17 +85,13 @@ void loop() {
   if (Serial.available() > 0) {
     // read the incoming byte:
     incomingByte = Serial.read();
-
-    // say what you got:
-    Serial.print("I received: ");
-    Serial.println(incomingByte, DEC);
-    if(incomingByte == 49){
-      // recived 1 => open Dachfenster
-      dachfensterServo.write(180);
-    }
-    else if(incomingByte == 48){
-      // recived 0 => close Dachfenster
+    if(incomingByte == 'u'){
+      // recived u => open Dachfenster
       dachfensterServo.write(0);
+    }
+    else if(incomingByte == 'd'){
+      // recived d => close Dachfenster
+      dachfensterServo.write(180);
     }
   }
   
