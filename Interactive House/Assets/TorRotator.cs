@@ -16,6 +16,6 @@ public class TorRotator : MonoBehaviour {
         decimal res = ((decimal)SerialCommunicator.potiTuer).Map( SerialCommunicator.potiTuerMin, SerialCommunicator.potiTuerMax, 0, 90);
         Debug.Log(SerialCommunicator.potiTuer + " to: " + res);
         Quaternion target = Quaternion.Euler(0, (int)res, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, target, Time.deltaTime * smooth);
     }
 }

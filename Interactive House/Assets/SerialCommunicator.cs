@@ -35,6 +35,9 @@ public class SerialCommunicator : MonoBehaviour
         potiTuerMin = 12;
         potiTuerMax = 16;
 
+        GyroX = 356f;
+        GyroY = 352f;
+        GyroZ = 201f;
 
         if (!this.enabled)
             return;
