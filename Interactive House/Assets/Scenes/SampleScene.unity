@@ -194,6 +194,123 @@ Transform:
   m_Father: {fileID: 1621094843}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 35.914, y: -90.00001, z: 0}
+--- !u!1 &27759611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 27759617}
+  - component: {fileID: 27759616}
+  - component: {fileID: 27759615}
+  - component: {fileID: 27759614}
+  - component: {fileID: 27759613}
+  - component: {fileID: 27759612}
+  m_Layer: 0
+  m_Name: Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &27759612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27759611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c682299ece3ad284db734154b464f3ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSourceAlarm: {fileID: 462958000}
+  audioSourceDoorbell: {fileID: 189101200}
+--- !u!114 &27759613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27759611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96128b136727be84d87ec29d3b8b99ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightsource: {fileID: 788458531}
+--- !u!114 &27759614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27759611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db148be7dbf953a47a31919bb7210ebe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isInDemoMode: 1
+  demoTimeVal: 0
+  potiTuer: 0
+  potiTuerZu: 0
+  potiTuerOffen: 0
+  klingelState: 0
+  sonarCM: 0
+  isAlarm: 0
+  magnetState: 0
+  lichtsensorState: 75
+  GyroX: 0
+  GyroY: 0
+  GyroZ: 0
+  isDachfensterOpen: 0
+  COM: COM4
+--- !u!114 &27759615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27759611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e812fe2b8c1751745b3752bae4da93d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weather: {fileID: 778517024}
+--- !u!114 &27759616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27759611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74520ab176556f34cb0594b50a848080, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera1: {fileID: 534669904}
+  camera2: {fileID: 19337893}
+  camera3: {fileID: 822716908}
+--- !u!4 &27759617
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27759611}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -75.636345, y: -23.52641, z: 3.1846592}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &108930724 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 102306, guid: 5d58fe5e55b5d8046a9e0b9d433f0f6c,
@@ -409,66 +526,6 @@ Transform:
   m_Father: {fileID: 1621094843}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &267005478
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 267005479}
-  - component: {fileID: 267005480}
-  - component: {fileID: 267005481}
-  m_Layer: 0
-  m_Name: Leap Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &267005479
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 267005478}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.146528, y: 5.0538845, z: -7.811532}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &267005480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 267005478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74520ab176556f34cb0594b50a848080, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camera1: {fileID: 534669904}
-  camera2: {fileID: 19337893}
-  camera3: {fileID: 822716908}
---- !u!114 &267005481
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 267005478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e812fe2b8c1751745b3752bae4da93d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weather: {fileID: 778517024}
 --- !u!1 &347011839 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 101960, guid: 7eddbecd3e0bb73419c4a337c426f20a,
@@ -530,7 +587,7 @@ PrefabInstance:
     - target: {fileID: 679085618894485552, guid: d07088b1f6369754b9f5512790350244,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 679085618894485552, guid: d07088b1f6369754b9f5512790350244,
         type: 3}
@@ -1360,90 +1417,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2142532849
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2142532851}
-  - component: {fileID: 2142532850}
-  - component: {fileID: 2142532852}
-  - component: {fileID: 2142532853}
-  m_Layer: 0
-  m_Name: SerialCommunicator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2142532850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2142532849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db148be7dbf953a47a31919bb7210ebe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isInDemoMode: 1
-  demoTimeVal: 0
-  potiTuer: 0
-  potiTuerZu: 0
-  potiTuerOffen: 0
-  klingelState: 0
-  sonarCM: 0
-  isAlarm: 0
-  magnetState: 0
-  lichtsensorState: 75
-  GyroX: 0
-  GyroY: 0
-  GyroZ: 0
-  isDachfensterOpen: 0
-  COM: COM4
---- !u!4 &2142532851
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2142532849}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.53, y: 1.51, z: 0.72}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2142532852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2142532849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96128b136727be84d87ec29d3b8b99ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lightsource: {fileID: 788458531}
---- !u!114 &2142532853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2142532849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c682299ece3ad284db734154b464f3ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSourceAlarm: {fileID: 462958000}
-  audioSourceKlingel: {fileID: 189101200}

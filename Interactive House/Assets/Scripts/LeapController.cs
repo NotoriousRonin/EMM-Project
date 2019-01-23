@@ -31,6 +31,12 @@ public class LeapController : MonoBehaviour {
     /// A flag to start and stop RainAnimation
     /// </summary>
     private bool animationFlag;
+
+    /// <summary>
+    /// Rather the Animation is running already
+    /// </summary>
+    private bool animationIsRunning;
+
     /// <summary>
     /// Variables to check active and to be active Camera
     /// </summary>
@@ -46,14 +52,21 @@ public class LeapController : MonoBehaviour {
     /// </summary>
     private WeatherController weatherController;
 
+    /// <summary>
+    /// Contains Value given by Arduino Sensors
+    /// </summary>
+    private SerialCommunicator serialCommunicator;
+
 	/// <summary>
     /// Initialize the Leap Provider Object
     /// </summary>
 	void Start () {
         leapProvider = FindObjectOfType<LeapServiceProvider>() as LeapServiceProvider;
         weatherController = GetComponent<WeatherController>();
+        serialCommunicator = GetComponent<SerialCommunicator>();
         frameFlag = true;
         animationFlag = false;
+        animationIsRunning = false;
     }
 	
 	/// <summary>
@@ -68,44 +81,72 @@ public class LeapController : MonoBehaviour {
             if (hand.IsLeft)
             {
                 List<Finger> fingerlist = hand.Fingers;
-                if (frameFlag)
+                //If all Fingers are extended stop the Animation
+                if (animationIsRunning)
                 {
-                    //Save all current Fingerpositions                   
-                    positionThumb = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z;
-                    positionIndex = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z;
-                    positionMiddle = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z;
-                    positionRing = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z;
-                    positionPinky = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z;
+                    if (motionCamera(fingerlist, Finger.FingerType.TYPE_INDEX, Finger.FingerType.TYPE_MIDDLE, Finger.FingerType.TYPE_PINKY, Finger.FingerType.TYPE_RING, Finger.FingerType.TYPE_THUMB))
+                    {
+                        animationFlag = false;
+                    }
                 }
-                else
+                if (!animationIsRunning)
                 {
-                    //Check Tolerance Level as it can differ from Person to Person
-                    //Debug.Log(Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z));
-                    //Debug.Log(Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z));
-                    //Debug.Log(Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z));
-                    //Debug.Log(Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z));
-                    //Debug.Log(Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z));
+                    if (frameFlag)
+                    {
+                        //Save all current Fingerpositions                   
+                        positionThumb = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z;
+                        positionIndex = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z;
+                        positionMiddle = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z;
+                        positionRing = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z;
+                        positionPinky = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z;
+                    }
+                    else
+                    {
+                        //Check Tolerance Level as it can differ from Person to Person
+                        //Debug.Log(Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z));
+                        //Debug.Log(Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z));
+                        //Debug.Log(Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z));
+                        //Debug.Log(Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z));
+                        //Debug.Log(Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z));
 
-                    //Check if all Fingers are pointing down
-                    if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.y < 0.03) animationFlag = false;
-                    else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.y < 0.03) animationFlag = false;
-                    else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.y < 0.03) animationFlag = false;
-                    else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.y < 0.03) animationFlag = false;
-                    else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.y < 0.03) animationFlag = false;
-                    //Check if all Fingerpositions changed 
-                    else if (Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z) < 0.0009) animationFlag = false;
-                    else if (Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z) < 0.0009) animationFlag = false;
-                    else if (Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z) < 0.0005) animationFlag = false;
-                    else if (Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z) < 0.0009) animationFlag = false;
-                    else if (Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z) < 0.0009) animationFlag = false;               
-                    else animationFlag = true;
+                        //Check if all Fingers are pointing down
+                        if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.y < 0.03) animationFlag = false;
+                        else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.y < 0.03) animationFlag = false;
+                        else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.y < 0.03) animationFlag = false;
+                        else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.y < 0.03) animationFlag = false;
+                        else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.y < 0.03) animationFlag = false;
+                        //Check if all Fingerpositions changed 
+                        else if (Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z) < 0.0009) animationFlag = false;
+                        else if (Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z) < 0.0009) animationFlag = false;
+                        else if (Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z) < 0.0005) animationFlag = false;
+                        else if (Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z) < 0.0009) animationFlag = false;
+                        else if (Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z) < 0.0009) animationFlag = false;
+                        else animationFlag = true;
+                    }
+
+                    //Toggle frameFlag (above: else is run the frame after if)
+                    frameFlag = !frameFlag;
+                }          
+               
+                //Only Activate if it isn't activated yet && animationFlag = true
+                if (!animationIsRunning && animationFlag != animationIsRunning)
+                {
+                    animationIsRunning = true;
+                    //Activate Weather
+                    weatherController.setActivateWeather(true);                  
+                    //Close the Roof 
+                    serialCommunicator.isDachfensterOpen = false;
                 }
-
-                //WeatherController depending on animationFlag
-                weatherController.setActivateWeather(animationFlag);
-
-                //Toggle frameFlag (above: else is run the frame after if)
-                frameFlag = !frameFlag;              
+                //Only Deactivate if it is activated && animationFlag = false
+                else if (animationIsRunning && animationFlag != animationIsRunning)
+                {
+                    animationIsRunning = false;
+                    //Deactivate Weather
+                    weatherController.setActivateWeather(false);
+                    //Open the Roof
+                    serialCommunicator.isDachfensterOpen = true;
+                }
+                           
             }
             //Right Hand controlls active Camera
             if (hand.IsRight)
