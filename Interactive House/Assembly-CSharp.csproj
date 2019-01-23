@@ -252,6 +252,7 @@
     <Compile Include="Assets\Scripts\LeapController.cs" />
     <Compile Include="Assets\Scripts\LightController.cs" />
     <Compile Include="Assets\Scripts\MathHelper.cs" />
+    <Compile Include="Assets\Scripts\PlaySound.cs" />
     <Compile Include="Assets\Scripts\SerialCommunicator.cs" />
     <Compile Include="Assets\Scripts\TorRotator.cs" />
     <Compile Include="Assets\Scripts\Tuer1.cs" />
