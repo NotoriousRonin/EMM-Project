@@ -1,40 +1,7 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &679085618894485555
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 679085618894485552}
-  m_Layer: 0
-  m_Name: Weather
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &679085618894485552
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 679085618894485555}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.93297, y: -0.9276686, z: -14.22506}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 676484283408394189}
-  - {fileID: 676320674205255110}
-  - {fileID: 683695160676528780}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &679085618128463275
-PrefabInstance:
+Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
@@ -74,14 +41,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 923d70ecede3191428d99a35c1defc8d, type: 3}
---- !u!4 &676484283408394189 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4435544531436134, guid: 923d70ecede3191428d99a35c1defc8d,
-    type: 3}
-  m_PrefabInstance: {fileID: 679085618128463275}
-  m_PrefabAsset: {fileID: 0}
+  m_RootGameObject: {fileID: 0}
+  m_IsPrefabAsset: 0
 --- !u!1001 &679085618435895676
-PrefabInstance:
+Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
@@ -141,14 +104,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52aeb8a117173bb459b7a204a669cb0b, type: 3}
---- !u!4 &676320674205255110 stripped
+  m_RootGameObject: {fileID: 0}
+  m_IsPrefabAsset: 0
+--- !u!4 &679085618894485552
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4044915486192826, guid: 52aeb8a117173bb459b7a204a669cb0b,
-    type: 3}
-  m_PrefabInstance: {fileID: 679085618435895676}
-  m_PrefabAsset: {fileID: 0}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 679085618894485555}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.93297, y: -0.9276686, z: -14.22506}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &679085618894485555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 679085618894485552}
+  m_Layer: 0
+  m_Name: Weather
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
 --- !u!1001 &679085619091339036
-PrefabInstance:
+Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
@@ -188,9 +175,5 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4bbab67737345c47ba61b4801917a5c, type: 3}
---- !u!4 &683695160676528780 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4611238365808016, guid: c4bbab67737345c47ba61b4801917a5c,
-    type: 3}
-  m_PrefabInstance: {fileID: 679085619091339036}
-  m_PrefabAsset: {fileID: 0}
+  m_RootGameObject: {fileID: 0}
+  m_IsPrefabAsset: 0
