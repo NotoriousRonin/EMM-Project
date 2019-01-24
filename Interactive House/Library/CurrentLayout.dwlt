@@ -175,7 +175,7 @@ MonoBehaviour:
     y: 0
     width: 1920
     height: 997
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 350}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &8
 MonoBehaviour:
@@ -587,9 +587,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 5e3a0000
-      m_LastClickedID: 14942
-      m_ExpandedIDs: d4fbffffb43a0000
+      m_SelectedIDs: 563a0000983a0000
+      m_LastClickedID: 15000
+      m_ExpandedIDs: fcdbffffd4fbffffb43a0000b83a0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
