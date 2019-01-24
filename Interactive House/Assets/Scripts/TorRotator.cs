@@ -8,7 +8,7 @@ public class TorRotator : MonoBehaviour {
     float angle = 0f;
     // Use this for initialization
     void Start () {
-        SerialCommunicator = GameObject.Find("SerialCommunicator").GetComponent<SerialCommunicator>();
+        SerialCommunicator = GameObject.Find("Controller").GetComponent<SerialCommunicator>();
 	}
 	
 	// Update is called once per frame

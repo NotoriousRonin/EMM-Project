@@ -9,7 +9,7 @@ public class Tuer1 : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        SerialCommunicator = GameObject.Find("SerialCommunicator").GetComponent<SerialCommunicator>();
+        SerialCommunicator = GameObject.Find("Controller").GetComponent<SerialCommunicator>();
     }
 	
 	// Update is called once per frame
