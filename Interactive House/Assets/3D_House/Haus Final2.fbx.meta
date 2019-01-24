@@ -5616,7 +5616,7 @@ ModelImporter:
       name: "Magnet f\xE4llt"
       takeName: Cinema_4D_Main
       firstFrame: 6.5
-      lastFrame: 25
+      lastFrame: 29
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -5643,8 +5643,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Magnet liegt
       takeName: Cinema_4D_Main
-      firstFrame: 23.5
-      lastFrame: 25
+      firstFrame: 29
+      lastFrame: 30
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
