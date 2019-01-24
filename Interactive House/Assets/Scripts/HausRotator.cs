@@ -9,7 +9,7 @@ public class HausRotator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        serialCommunicator = GameObject.Find("SerialCommunicator").GetComponent<SerialCommunicator>();
+        serialCommunicator = GameObject.Find("Controller").GetComponent<SerialCommunicator>();
     }
 	
 	// Update is called once per frame
