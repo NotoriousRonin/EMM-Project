@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class SerialCommunicator : MonoBehaviour
 {
+    public Vector3 initGyroRotation = new Vector3(356, 352, 201); // in degree
+
     public bool isInDemoMode;
     public float demoTimeVal;
 
@@ -30,6 +32,11 @@ public class SerialCommunicator : MonoBehaviour
     /* changing this will send serial commands to the arduino */
     public volatile bool isDachfensterOpen;
     private volatile bool lastIsDachfensterOpen;
+
+    public enum DebugTestDataEnum { None, NachRechts, NachLinks, NachVorne, NachHinten };
+
+    //This is what you need to show in the inspector.
+    public DebugTestDataEnum DebugTestGyroData;
 
     public String COM;
 
@@ -142,6 +149,29 @@ public class SerialCommunicator : MonoBehaviour
                 sonarCM = 10;
             }
 
+            switch (DebugTestGyroData)
+            {
+                case DebugTestDataEnum.NachRechts:
+                    GyroX = 317;
+                    GyroY = 352;
+                    GyroZ = 261;
+                    break;
+                case DebugTestDataEnum.NachLinks:
+                    GyroX = 31;
+                    GyroY = 352;
+                    GyroZ = 101;
+                    break;
+                case DebugTestDataEnum.NachVorne:
+                    GyroX = 352;
+                    GyroY = 295;
+                    GyroZ = 183;
+                    break;
+                case DebugTestDataEnum.NachHinten:
+                    GyroX = 355;
+                    GyroY = 40;
+                    GyroZ = 355;
+                    break;
+            }
         }
     }
 

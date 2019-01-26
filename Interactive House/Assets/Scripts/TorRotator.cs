@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TorRotator : MonoBehaviour {
     private SerialCommunicator SerialCommunicator;
+    
     float smooth = 5.0f;
     float angle = 0f;
     // Use this for initialization
