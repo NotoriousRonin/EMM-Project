@@ -68,7 +68,16 @@ public class LeapController : MonoBehaviour {
         animationFlag = false;
         animationIsRunning = false;
     }
-	
+
+    private int lastCameraGesture = -1;
+    private int cameraGestureCnt = 0;
+
+    private float weatherGestureIgnoreTime;
+    private float weatherGestureIgnmoreTimeout = 2f; // in seconds
+
+    private float cameraGestureIgnoreTime;
+    private float cameraGestureIgnoreTimeout = 0.5f; // in seconds
+
 	/// <summary>
     /// Checks for Motion done and Interacts with Logical Object
     /// </summary>
@@ -78,89 +87,142 @@ public class LeapController : MonoBehaviour {
         foreach (Hand hand in frame.Hands)
         {
             //Left Hand controlls Rain Animation
-            if (hand.IsLeft)
+            if (hand.IsLeft && Time.time > weatherGestureIgnoreTime)
             {
-                List<Finger> fingerlist = hand.Fingers;
-                //If all Fingers are extended stop the Animation
-                if (animationIsRunning)
-                {
-                    if (motionCamera(fingerlist, Finger.FingerType.TYPE_INDEX, Finger.FingerType.TYPE_MIDDLE, Finger.FingerType.TYPE_PINKY, Finger.FingerType.TYPE_RING, Finger.FingerType.TYPE_THUMB))
-                    {
-                        animationFlag = false;
-                    }
-                }
-                if (!animationIsRunning)
-                {
-                    if (frameFlag)
-                    {
-                        //Save all current Fingerpositions                   
-                        positionThumb = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z;
-                        positionIndex = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z;
-                        positionMiddle = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z;
-                        positionRing = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z;
-                        positionPinky = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z;
-                    }
-                    else
-                    {
-                        //Check Tolerance Level as it can differ from Person to Person
-                        //Debug.Log(Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z));
-                        //Debug.Log(Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z));
-                        //Debug.Log(Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z));
-                        //Debug.Log(Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z));
-                        //Debug.Log(Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z));
-
-                        //Check if all Fingers are pointing down
-                        if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.y < 0.03) animationFlag = false;
-                        else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.y < 0.03) animationFlag = false;
-                        else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.y < 0.03) animationFlag = false;
-                        else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.y < 0.03) animationFlag = false;
-                        else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.y < 0.03) animationFlag = false;
-                        //Check if all Fingerpositions changed 
-                        else if (Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z) < 0.0009) animationFlag = false;
-                        else if (Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z) < 0.0009) animationFlag = false;
-                        else if (Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z) < 0.0005) animationFlag = false;
-                        else if (Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z) < 0.0009) animationFlag = false;
-                        else if (Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z) < 0.0009) animationFlag = false;
-                        else animationFlag = true;
-                    }
-
-                    //Toggle frameFlag (above: else is run the frame after if)
-                    frameFlag = !frameFlag;
-                }          
+                bool isWeatherAnimation = detectWeatherGesture(hand);
+                animationFlag = isWeatherAnimation;     
+                Debug.Log("isWeatherAnimation " + isWeatherAnimation);
                
                 //Only Activate if it isn't activated yet && animationFlag = true
                 if (!animationIsRunning && animationFlag != animationIsRunning)
                 {
+                    Debug.Log("Activate Weather");
                     animationIsRunning = true;
                     //Activate Weather
                     weatherController.setActivateWeather(true);                  
                     //Close the Roof 
                     serialCommunicator.isDachfensterOpen = false;
+
+                    weatherGestureIgnoreTime = Time.time + weatherGestureIgnmoreTimeout;
                 }
-                //Only Deactivate if it is activated && animationFlag = false
-                else if (animationIsRunning && animationFlag != animationIsRunning)
+
+                bool isStopWeatherAnimation = detectWeatherStopGesture(hand);
+                if (animationIsRunning && isStopWeatherAnimation)
                 {
+                    Debug.Log("Stop Weather");
                     animationIsRunning = false;
                     //Deactivate Weather
                     weatherController.setActivateWeather(false);
                     //Open the Roof
                     serialCommunicator.isDachfensterOpen = true;
-                }
-                           
+
+                    weatherGestureIgnoreTime = Time.time + weatherGestureIgnmoreTimeout;
+                }        
             }
+
+
             //Right Hand controlls active Camera
-            if (hand.IsRight)
+            if (hand.IsRight && Time.time > cameraGestureIgnoreTime)
             {
-                List<Finger> fingerlist = hand.Fingers;
-                if (motionCamera(fingerlist, Finger.FingerType.TYPE_THUMB, Finger.FingerType.TYPE_INDEX, Finger.FingerType.TYPE_MIDDLE))
-                    switchCamera(3);
-                else if (motionCamera(fingerlist, Finger.FingerType.TYPE_THUMB, Finger.FingerType.TYPE_INDEX))
-                    switchCamera(2);
-                else if (motionCamera(fingerlist, Finger.FingerType.TYPE_THUMB))
-                    switchCamera(1);                
+                int res = detectCameraGesture(hand);
+                //Debug.Log(res);
+                if (res != -1 && res == lastCameraGesture)
+                {
+                    cameraGestureCnt++;
+                }
+                else
+                {
+                    cameraGestureCnt--;
+                }
+                if(cameraGestureCnt < -10)
+                {
+                    cameraGestureCnt = 0;
+                }
+                Debug.Log("cameraGestureCnt " + cameraGestureCnt);
+                // if gesture has been recognized n frames, change camera
+                if(cameraGestureCnt > 5)
+                {
+                    switchCamera(res);
+                    cameraGestureCnt = 0;
+                    cameraGestureIgnoreTime = Time.time + cameraGestureIgnoreTimeout;
+                }
+
+                lastCameraGesture = res;
             }
         }
 	}
+    
+    public bool detectWeatherStopGesture(Hand hand)
+    {
+        // If all Fingers are extended return true
+        if (motionCamera(hand.Fingers, Finger.FingerType.TYPE_INDEX, Finger.FingerType.TYPE_MIDDLE, Finger.FingerType.TYPE_PINKY, Finger.FingerType.TYPE_RING, Finger.FingerType.TYPE_THUMB))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool detectWeatherGesture(Hand hand)
+    {
+        bool isWeatherAnimation = false;
+        List<Finger> fingerlist = hand.Fingers;
+        if (!animationIsRunning)
+        {
+            if (frameFlag)
+            {
+                //Save all current Fingerpositions                   
+                positionThumb = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z;
+                positionIndex = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z;
+                positionMiddle = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z;
+                positionRing = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z;
+                positionPinky = fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z;
+            }
+            else
+            {
+                //Check Tolerance Level as it can differ from Person to Person
+                //Debug.Log(Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z));
+                //Debug.Log(Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z));
+                //Debug.Log(Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z));
+                //Debug.Log(Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z));
+                //Debug.Log(Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z));
+
+                //Check if all Fingers are pointing down
+                if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.y < 0.03) isWeatherAnimation = false;
+                else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.y < 0.03) isWeatherAnimation = false;
+                else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.y < 0.03) isWeatherAnimation = false;
+                else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.y < 0.03) isWeatherAnimation = false;
+                else if (hand.PalmPosition.y - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.y < 0.03) isWeatherAnimation = false;
+                //Check if all Fingerpositions changed 
+                else if (Mathf.Abs(positionThumb - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_THUMB).TipPosition.z) < 0.0009) isWeatherAnimation = false;
+                else if (Mathf.Abs(positionIndex - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_INDEX).TipPosition.z) < 0.0009) isWeatherAnimation = false;
+                else if (Mathf.Abs(positionMiddle - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_MIDDLE).TipPosition.z) < 0.0005) isWeatherAnimation = false;
+                else if (Mathf.Abs(positionRing - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_RING).TipPosition.z) < 0.0009) isWeatherAnimation = false;
+                else if (Mathf.Abs(positionPinky - fingerlist.Find(x => x.Type == Finger.FingerType.TYPE_PINKY).TipPosition.z) < 0.0009) isWeatherAnimation = false;
+                else isWeatherAnimation = true;
+            }
+
+            //Toggle frameFlag (above: else is run the frame after if)
+            frameFlag = !frameFlag;
+        }
+        return isWeatherAnimation;
+    }
+
+
+    public int detectCameraGesture(Hand hand)
+    {
+        List<Finger> fingerlist = hand.Fingers;
+        if (motionCamera(fingerlist, Finger.FingerType.TYPE_THUMB, Finger.FingerType.TYPE_INDEX, Finger.FingerType.TYPE_MIDDLE))
+            return 3;
+        else if (motionCamera(fingerlist, Finger.FingerType.TYPE_THUMB, Finger.FingerType.TYPE_INDEX))
+            return 2;
+        else if (motionCamera(fingerlist, Finger.FingerType.TYPE_THUMB))
+            return 1;
+        else
+            return -1;
+    }
 
     /// <summary>
     /// Checks if the FingerTypes given are extended and the others not

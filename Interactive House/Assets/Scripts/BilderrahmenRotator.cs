@@ -23,8 +23,8 @@ public class BilderrahmenRotator : MonoBehaviour
     void Start()
     {
         serialCommunicator = GameObject.Find("Controller").GetComponent<SerialCommunicator>();
-        zClampMin = -4;
-        zClampMax = 4;
+       // zClampMin = -4;
+       // zClampMax = 4;
     }
 
     // Update is called once per frame
