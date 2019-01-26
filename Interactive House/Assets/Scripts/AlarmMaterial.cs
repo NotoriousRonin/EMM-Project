@@ -9,22 +9,33 @@ public class AlarmMaterial : MonoBehaviour
     public Material matRed;
     public Material matNormal;
     public Light light;
-    private float t = 0;
+    float nextUpdate = 0.3f;
+    bool on = false;
 
 
     void Start()
     {
         SerialCommunicator = GameObject.Find("Controller").GetComponent<SerialCommunicator>();
 
-        
+
     }
+
     // Update is called once per frame
     void Update()
     {
 
         if (SerialCommunicator.isAlarm == true)
         {
-            changeBetweenMaterials();
+
+            if (Time.time >= nextUpdate)
+            {
+                nextUpdate = Time.time + 0.3f;
+                on = !on;
+                toggle();
+            }
+
+
+
         }
         else
         {
@@ -35,19 +46,25 @@ public class AlarmMaterial : MonoBehaviour
 
     }
 
-    private void changeBetweenMaterials()
+
+    private void toggle()
     {
-        Renderer  renderer= this.gameObject.GetComponent<Renderer>();
-        renderer.material = matRed;
-        light.intensity = 10;
 
-        //WaitForSeconds(0.25)??
-        /*
-        renderer.material = matNormal;
-        light.intensity = 0;
-        */
+        if (!on)
+        {
+            Renderer renderer = this.gameObject.GetComponent<Renderer>();
+            renderer = this.gameObject.GetComponent<Renderer>();
+            renderer.material = matRed;
+            light.intensity = 10;
+        }
+
+         if (on) {
+            Renderer renderer = this.gameObject.GetComponent<Renderer>();
+            renderer = this.gameObject.GetComponent<Renderer>();
+            renderer.material = matNormal;
+            light.intensity = 0;
+         }
     }
-
 
     private void changeMaterial()
     {

@@ -6,6 +6,7 @@ public class Magnet : MonoBehaviour {
 
     private SerialCommunicator SerialCommunicator;
     public Animator animatorHouse;
+    public GameObject kaminfeuer;
 
     void Start()
     {
@@ -18,10 +19,12 @@ public class Magnet : MonoBehaviour {
         if (SerialCommunicator.magnetState == true)
         {
             animatorHouse.SetBool("magnetState", true);
+            kaminfeuer.SetActive(true);
         }
         else
         {
             animatorHouse.SetBool("magnetState", false);
+            kaminfeuer.SetActive(false);
         }
 
     }
