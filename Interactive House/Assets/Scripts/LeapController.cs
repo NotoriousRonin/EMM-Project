@@ -43,6 +43,36 @@ public class LeapController : MonoBehaviour {
     private int currentCamera = 1;
 
     /// <summary>
+    /// Variable to save the LastCameraGesture (1-3 for Camera, -1 on no such Motion)
+    /// </summary>
+    private int lastCameraGesture = -1;
+
+    /// <summary>
+    /// Number of Frames the Gesture was done for
+    /// </summary>
+    private int cameraGestureCnt = 0;
+
+    /// <summary>
+    /// CameraGesture will be ignored after one is done
+    /// </summary>
+    private float cameraGestureIgnoreTime;
+
+    /// <summary>
+    /// For how long the CameraGesture will be ignored for
+    /// </summary>
+    private const float cameraGestureIgnoreTimeout = 0.5f; // in seconds
+
+    /// <summary>
+    /// WeatherGesture will be ignored after one is done
+    /// </summary>
+    private float weatherGestureIgnoreTime;
+
+    /// <summary>
+    /// For how long the WeatherGesture will be ignored for 
+    /// </summary>
+    private const float weatherGestureIgnoreTimeout = 2f; // in seconds
+
+    /// <summary>
     /// Leap Provider Object
     /// </summary>
     private LeapProvider leapProvider;
@@ -69,15 +99,6 @@ public class LeapController : MonoBehaviour {
         animationIsRunning = false;
     }
 
-    private int lastCameraGesture = -1;
-    private int cameraGestureCnt = 0;
-
-    private float weatherGestureIgnoreTime;
-    private float weatherGestureIgnmoreTimeout = 2f; // in seconds
-
-    private float cameraGestureIgnoreTime;
-    private float cameraGestureIgnoreTimeout = 0.5f; // in seconds
-
 	/// <summary>
     /// Checks for Motion done and Interacts with Logical Object
     /// </summary>
@@ -87,6 +108,8 @@ public class LeapController : MonoBehaviour {
         foreach (Hand hand in frame.Hands)
         {
             //Left Hand controlls Rain Animation
+            //If one of the WeatherGestures is done
+            //Checking them will be ignored for a certain time
             if (hand.IsLeft && Time.time > weatherGestureIgnoreTime)
             {
                 bool isWeatherAnimation = detectWeatherGesture(hand);
@@ -103,7 +126,7 @@ public class LeapController : MonoBehaviour {
                     //Close the Roof 
                     serialCommunicator.isDachfensterOpen = false;
 
-                    weatherGestureIgnoreTime = Time.time + weatherGestureIgnmoreTimeout;
+                    weatherGestureIgnoreTime = Time.time + weatherGestureIgnoreTimeout;
                 }
 
                 bool isStopWeatherAnimation = detectWeatherStopGesture(hand);
@@ -116,12 +139,14 @@ public class LeapController : MonoBehaviour {
                     //Open the Roof
                     serialCommunicator.isDachfensterOpen = true;
 
-                    weatherGestureIgnoreTime = Time.time + weatherGestureIgnmoreTimeout;
+                    weatherGestureIgnoreTime = Time.time + weatherGestureIgnoreTimeout;
                 }        
             }
 
 
             //Right Hand controlls active Camera
+            //If one of the CameraGestures is done
+            //Checking them will be ignored for a certain time
             if (hand.IsRight && Time.time > cameraGestureIgnoreTime)
             {
                 int res = detectCameraGesture(hand);
@@ -139,7 +164,8 @@ public class LeapController : MonoBehaviour {
                     cameraGestureCnt = 0;
                 }
                 Debug.Log("cameraGestureCnt " + cameraGestureCnt);
-                // if gesture has been recognized n frames, change camera
+                //If Gesture has been recognized 5 frames -> switchCamera()
+                //This prevents the switchCamera() to be done if pulling away ones Hand
                 if(cameraGestureCnt > 5)
                 {
                     switchCamera(res);
@@ -152,10 +178,15 @@ public class LeapController : MonoBehaviour {
         }
 	}
     
-    public bool detectWeatherStopGesture(Hand hand)
+    /// <summary>
+    /// Check if the WeatherGesture to stop WeatherAnimation was done
+    /// </summary>
+    /// <param name="hand">The Hand this Gesture should be done with</param>
+    /// <returns></returns>
+    private bool detectWeatherStopGesture(Hand hand)
     {
         // If all Fingers are extended return true
-        if (motionCamera(hand.Fingers, Finger.FingerType.TYPE_INDEX, Finger.FingerType.TYPE_MIDDLE, Finger.FingerType.TYPE_PINKY, Finger.FingerType.TYPE_RING, Finger.FingerType.TYPE_THUMB))
+        if (isFingersExtended(hand.Fingers, Finger.FingerType.TYPE_INDEX, Finger.FingerType.TYPE_MIDDLE, Finger.FingerType.TYPE_PINKY, Finger.FingerType.TYPE_RING, Finger.FingerType.TYPE_THUMB))
         {
             return true;
         }
@@ -165,7 +196,12 @@ public class LeapController : MonoBehaviour {
         }
     }
 
-    public bool detectWeatherGesture(Hand hand)
+    /// <summary>
+    /// Check if WeatherGesture to start WeatherAnimation was done
+    /// </summary>
+    /// <param name="hand">The Hand this Gesture should be done with</param>
+    /// <returns>Return TRUE if Gesture was done, else false</returns>
+    private bool detectWeatherGesture(Hand hand)
     {
         bool isWeatherAnimation = false;
         List<Finger> fingerlist = hand.Fingers;
@@ -210,15 +246,20 @@ public class LeapController : MonoBehaviour {
         return isWeatherAnimation;
     }
 
-
-    public int detectCameraGesture(Hand hand)
+    /// <summary>
+    /// Check if the Gestures for Camera Switches was done 
+    /// returns which Camera should be activated
+    /// </summary>
+    /// <param name="hand">The Hand this Gesture should be done with</param>
+    /// <returns>1-3 for Camera if Gesture was detected, else -1</returns>
+    private int detectCameraGesture(Hand hand)
     {
         List<Finger> fingerlist = hand.Fingers;
-        if (motionCamera(fingerlist, Finger.FingerType.TYPE_THUMB, Finger.FingerType.TYPE_INDEX, Finger.FingerType.TYPE_MIDDLE))
+        if (isFingersExtended(fingerlist, Finger.FingerType.TYPE_THUMB, Finger.FingerType.TYPE_INDEX, Finger.FingerType.TYPE_MIDDLE))
             return 3;
-        else if (motionCamera(fingerlist, Finger.FingerType.TYPE_THUMB, Finger.FingerType.TYPE_INDEX))
+        else if (isFingersExtended(fingerlist, Finger.FingerType.TYPE_THUMB, Finger.FingerType.TYPE_INDEX))
             return 2;
-        else if (motionCamera(fingerlist, Finger.FingerType.TYPE_THUMB))
+        else if (isFingersExtended(fingerlist, Finger.FingerType.TYPE_THUMB))
             return 1;
         else
             return -1;
@@ -230,7 +271,7 @@ public class LeapController : MonoBehaviour {
     /// <param name="fingerlist">Fingers of the Hand the Motion is done with</param>
     /// <param name="fingerTypes">The only Fingers that should be extended</param>
     /// <returns>TRUE if given FingerTypes are the only extended Fingers</returns>
-    private bool motionCamera(List<Finger> fingerlist, params Finger.FingerType[] fingerTypes)
+    private bool isFingersExtended(List<Finger> fingerlist, params Finger.FingerType[] fingerTypes)
     {
         if (fingerlist.FindAll(x => x.IsExtended).Count != (fingerTypes.Length)) return false;
         foreach (Finger.FingerType type in fingerTypes)
